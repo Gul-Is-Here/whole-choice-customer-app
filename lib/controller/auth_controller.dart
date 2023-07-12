@@ -3,12 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/consts/consts.dart';
+// import 'package:whole_choice_customer/views/home-screens/home.dart';
+
+import '../home-screens/home.dart';
+import '../views/auth_screen/verify_phone.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
   // textController
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController verifyController = TextEditingController();
 
   Future<UserCredential?> loginMethod({context}) async {
     UserCredential? userCredential;
@@ -27,6 +33,10 @@ class AuthController extends GetxController {
     try {
       userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+
+      if (userCredential.user != null) {
+        await userCredential.user!.sendEmailVerification();
+      }
     } on FirebaseAuthException catch (e) {
       VxToast.show(context, msg: e.toString());
     }
@@ -36,13 +46,14 @@ class AuthController extends GetxController {
   //  Forget Password Reset
 
   // Storing user data in FireStore
-  storeUserData({name, email, password}) async {
+  storeUserData({name, email, password, phone}) async {
     DocumentReference store =
         firestore.collection(usersCollection).doc(currentUser!.uid);
     store.set({
       "name": name,
       "password": password,
       "email": email,
+      "phone": phone,
       "imageUrl": "",
       "id": currentUser!.uid,
       "cart_count": "00",
@@ -60,4 +71,42 @@ class AuthController extends GetxController {
     }
   }
   // Login With phone nummber
+
+  phoneNumber(context) async {
+    isLoading.value = true;
+    await auth
+        .verifyPhoneNumber(
+            phoneNumber: phoneController.text,
+            verificationCompleted: (_) {},
+            verificationFailed: (e) {
+              print(e.toString());
+            },
+            codeSent: (String verficationId, int? token) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return VerifyPhoneNumber(verificationId: verficationId);
+              }));
+            },
+            codeAutoRetrievalTimeout: (e) {
+              print(e.toString());
+            })
+        .onError((error, stackTrace) {
+      print(error.toString());
+      isLoading.value = false;
+    });
+  }
+
+  void verifyPhoneNumber(String verificationID, context) async {
+    isLoading.value = true;
+    final credential = PhoneAuthProvider.credential(
+        verificationId: verificationID,
+        smsCode: verifyController.text.toString());
+    try {
+      await auth.signInWithCredential(credential);
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return const Home();
+      }));
+    } catch (e) {
+      isLoading.value = false;
+    }
+  }
 }

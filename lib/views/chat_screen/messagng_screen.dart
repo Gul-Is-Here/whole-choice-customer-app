@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/consts/consts.dart';
-import 'package:whole_choice_customer/services/firestore_services.dart';
 import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
 
 import 'chat_screen.dart';
@@ -43,10 +42,10 @@ class MessagesScreen extends StatelessWidget {
                         return Card(
                           child: ListTile(
                             onTap: () {
-                              Get.to(() => ChatScreen(), arguments: [
-                                data[index]['friend_name'],
-                                data[index]['toId']
-                              ]);
+                              // Get.to(() => ChatScreen(), arguments: [
+                              //   data[index]['friend_name'],
+                              //   data[index]['toId']
+                              // ]);
                             },
                             leading: const CircleAvatar(
                                 backgroundColor: yellowColor,

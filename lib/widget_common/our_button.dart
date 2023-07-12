@@ -8,7 +8,7 @@ Widget ourButton({onpress, Color, textColor, String? title}) {
           primary: Color,
           padding: const EdgeInsets.symmetric(horizontal: 23, vertical: 18),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
       onPressed: onpress,
       child: title!.text.color(textColor).fontFamily(bold).make());
 }

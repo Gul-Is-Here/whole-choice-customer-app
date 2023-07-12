@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whole_choice_customer/consts/consts.dart';
-import 'package:whole_choice_customer/views/home-screens/home.dart';
+// import 'package:whole_choice_customer/views/home-screens/home.dart';
 import 'package:whole_choice_customer/widget_common/applogo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:velocity_x/velocity_x.dart';
 
+import '../../home-screens/home.dart';
 import '../auth_screen/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {

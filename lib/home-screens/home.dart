@@ -3,11 +3,13 @@ import 'package:whole_choice_customer/controller/home_controller.dart';
 import 'package:whole_choice_customer/views/Profile_screen/profile_screen.dart';
 import 'package:whole_choice_customer/views/cart_screen/cart_screen.dart';
 import 'package:whole_choice_customer/views/category_screen.dart/category_screen.dart';
-import 'package:whole_choice_customer/views/home-screens/home_screen.dart';
+// import 'package:whole_choice_customer/views/home-screens/home_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/widget_common/exit_dialog.dart';
+
+import 'home_screen.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -44,7 +46,7 @@ class Home extends StatelessWidget {
     var navBody = [
       const HomeScreen(),
       const CategoryScreen(),
-      CartScreen(),
+      const CartScreen(),
       const ProfileScreen()
     ];
     return WillPopScope(

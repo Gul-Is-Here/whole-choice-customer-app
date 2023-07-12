@@ -95,35 +95,44 @@ class _CategoriesDetailState extends State<CategoriesDetail> {
                                       crossAxisSpacing: 8),
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Image.network(
                                         data[index]['p_imgs'][0],
-                                        width: 160,
+                                        width: double.infinity,
+                                        height: 150,
                                         fit: BoxFit.cover,
                                       ),
                                       10.heightBox,
-                                      "${data[index]['p_name']}"
-                                          .text
-                                          .fontFamily(semibold)
-                                          .color(darkFontGrey)
-                                          .make(),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: "${data[index]['p_name']}"
+                                            .text
+                                            .fontFamily(semibold)
+                                            .color(darkFontGrey)
+                                            .make(),
+                                      ),
                                       10.heightBox,
-                                      " ${data[index]['p_price']}"
-                                          .numCurrencyWithLocale()
-                                          .text
-                                          .color(redColor)
-                                          .fontFamily(bold)
-                                          .make()
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: " ${data[index]['p_price']}"
+                                            .numCurrencyWithLocale()
+                                            .text
+                                            .color(redColor)
+                                            .fontFamily(bold)
+                                            .make(),
+                                      )
                                     ],
                                   )
                                       .box
                                       .rounded
                                       .white
-                                      .padding(const EdgeInsets.all(8))
+                                      .padding(const EdgeInsets.all(0))
                                       .outerShadow
                                       .clip(Clip.antiAlias)
                                       .make()

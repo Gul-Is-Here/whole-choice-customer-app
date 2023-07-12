@@ -24,22 +24,26 @@ const loggedOut = "Logged Out Successfully";
 const privacyPolicy = ' Privacy Policy';
 const termsCondition = ' Terms and Conditions ';
 const alreadyHaveAnAccount = 'Already have an account? ';
-const validDetail = "can't loggedin try again";
+const validDetail = "Please verify your email";
 const home = 'Home',
     categories = 'Categories',
     cart = 'Cart',
     account = 'Account';
 const emailIcon = Icon(
   Icons.email,
-  color: yellowColor,
+  color: fontGrey,
 );
 const passwordIcon = Icon(
   Icons.lock,
-  color: yellowColor,
+  color: fontGrey,
+);
+const phoneIcon = Icon(
+  Icons.phone,
+  color: fontGrey,
 );
 const nameIcon = Icon(
   Icons.person_sharp,
-  color: yellowColor,
+  color: fontGrey,
 );
 //---->  Home Screen Strings   <-------
 
@@ -51,7 +55,7 @@ const searchAnything = 'Search for anything..',
     topCategories = 'Top Categories',
     womenDress = 'Women Dress',
     girlsWatches = 'Girls Watches',
-    mobilePhone = 'Mobile Phone',
+    mobilePhone = 'Mobile & Tabs',
     boysGlasses = 'Boys Glasses',
     tShirt = 'T Shirt',
     girlsDress = ' Girls Dresses',
@@ -80,7 +84,10 @@ const vedio = "Vedio",
 
 // -----> Profile Screen <-------
 
-const wishlist = "My Wishlist", orders = "My Orders", messages = "Messages";
+const wishlist = "My Wishlist",
+    orders = "My Orders",
+    messages = "Privacy Policy",
+    exchange = 'Return Policy';
 
 //  Payment Method Screeen
 const payPal = "Paypal", stripe = "Stripe", cod = "Cash On Delivery";

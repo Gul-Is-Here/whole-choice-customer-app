@@ -1,96 +1,85 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/Material.dart';
-import 'package:get/get.dart';
-
-import 'package:whole_choice_customer/consts/consts.dart';
-import 'package:whole_choice_customer/controller/chat_controller.dart';
-import 'package:whole_choice_customer/services/firestore_services.dart';
-import 'package:whole_choice_customer/views/chat_screen/components/sender_bubble.dart';
-import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  final String sellerName;
+  final String sellerEmail;
+
+  ChatScreen({
+    required this.sellerName,
+    required this.sellerEmail,
+  });
+  var sellerNumber =
+      "+16319669672"; // Example phone number in international format
 
   @override
   Widget build(BuildContext context) {
-    var contoller = Get.put(ChatsController());
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
-        title: "${contoller.friendName}"
-            .text
-            .fontFamily(semibold)
-            .color(darkFontGrey)
-            .make(),
+        title: const Text('Contact Us'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Obx(
-              () => contoller.isLoading.value
-                  ? Center(child: loadingIndicator())
-                  : Expanded(
-                      child: StreamBuilder(
-                        stream: FirestoreServies.getChatMessages(
-                            contoller.chatDocId.toString()),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(child: loadingIndicator());
-                          } else if (snapshot.data!.docs.isEmpty) {
-                            return Center(
-                                child: "Send a message.. "
-                                    .text
-                                    .color(darkFontGrey)
-                                    .make());
-                          } else {
-                            return ListView(
-                              children: snapshot.data!.docs
-                                  .mapIndexed((currentValue, index) {
-                                var data = snapshot.data!.docs[index];
-                                return Align(
-                                    alignment: data['uid'] == currentUser!.uid
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: senderBubble(data));
-                              }).toList(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+            const Text(
+              'Vendor Name:',
+              style: TextStyle(
+                fontFamily: 'Bold',
+                fontSize: 20,
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                    child: TextFormField(
-                  controller: contoller.msgController,
-                  cursorColor: yellowColor,
-                  decoration: const InputDecoration(
-                    hintText: "Type a message",
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: textfieldGrey)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: textfieldGrey)),
+            const SizedBox(height: 4),
+            Text(
+              sellerName,
+              style: TextStyle(fontSize: 16),
+            ),
+            const Divider(),
+            const Text(
+              'Email:',
+              style: TextStyle(
+                fontFamily: 'Bold',
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              "gulfarazahmed@emart.com",
+              style: TextStyle(fontSize: 16),
+            ),
+            const Divider(),
+            Text(
+              'WhatsApp:',
+              style: TextStyle(
+                fontFamily: 'Bold',
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(height: 4),
+            GestureDetector(
+              onTap: () {
+                launch('https://wa.me/$sellerNumber');
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.message,
+                    color: Colors.green,
                   ),
-                )),
-                IconButton(
-                    onPressed: () {
-                      contoller.sendMsg(contoller.msgController.text);
-                      contoller.msgController.clear();
-                    },
-                    icon: const Icon(
-                      Icons.send,
-                      color: yellowColor,
-                    ))
-              ],
-            )
-                .box
-                .height(70)
-                .padding(const EdgeInsets.all(12))
-                .margin(const EdgeInsets.only(bottom: 8))
-                .make()
+                  SizedBox(width: 8),
+                  Text(
+                    sellerNumber,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.green,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
           ],
         ),
       ),

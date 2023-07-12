@@ -25,23 +25,23 @@ class OrderDetailsScreen extends StatelessWidget {
               orderStatus(
                 icon: Icons.done,
                 color: redColor,
-                title: "Placed",
+                title: "Inquiry Sent",
                 showDone: data['order_placed'],
               ),
               orderStatus(
                   icon: Icons.thumb_up,
                   color: Colors.blue,
-                  title: "Confirmed",
+                  title: "Checked",
                   showDone: data['order_confirmed']),
               orderStatus(
                   icon: Icons.bus_alert,
                   color: yellowColor,
-                  title: "on Delivery",
+                  title: "Declined",
                   showDone: data['order_on_delivered']),
               orderStatus(
                   icon: Icons.done_all_rounded,
                   color: Colors.purple,
-                  title: "Delivered",
+                  title: "Shipped",
                   showDone: data['order_delivered']),
               const Divider(),
               10.heightBox,
@@ -70,22 +70,28 @@ class OrderDetailsScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            "Shipping Address".text.fontFamily(semibold).make(),
-                            "${data['order_by_name']}".text.make(),
-                            "${data['order_by_email']}".text.make(),
-                            "${data['order_by_country']}".text.make(),
-                            "${data['order_by_state']}".text.make(),
-                            "${data['order_by_city']}".text.make(),
-                            "${data['order_by_address']}".text.make(),
-                            "${data['order_by_postalcode']}".text.make(),
-                            "${data['order_by_phone']}".text.make(),
-                          ],
+                        SizedBox(
+                          width: 200,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              "Shipping Address"
+                                  .text
+                                  .fontFamily(semibold)
+                                  .make(),
+                              "${data['order_by_name']}".text.make(),
+                              "${data['order_by_email']}".text.make(),
+                              "${data['order_by_country']}".text.make(),
+                              "${data['order_by_state']}".text.make(),
+                              "${data['order_by_city']}".text.make(),
+                              "${data['order_by_address']}".text.make(),
+                              "${data['order_by_postalcode']}".text.make(),
+                              "${data['order_by_phone']}".text.make(),
+                            ],
+                          ),
                         ),
                         SizedBox(
-                          width: 90,
+                          width: 80,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,26 +120,61 @@ class OrderDetailsScreen extends StatelessWidget {
                   .makeCentered(),
               10.heightBox,
               ListView(
-                physics: const NeverScrollableScrollPhysics(),
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: List.generate(data['orders'].length, (index) {
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      orderPlaceDetail(
-                          title1: data['orders'][index]['title'],
-                          title2: data['orders'][index]['tprice'],
-                          d1: "${data['orders'][index]['qty']}x",
-                          d2: "Refundable"),
+                      10.heightBox,
+                      // orderPlaceDetail(
+                      //     title1: ,
+                      //     title2: data['orders'][index]['tprice'],
+                      //     d1: "${data['orders'][index]['qty']}x",
+                      //     d2: "Refundable"),
+                      "${data['orders'][index]['title']}"
+                          .text
+                          .fontFamily(bold)
+                          .make(),
+                      10.heightBox,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          "Amount".text.fontFamily(bold).make(),
+                          "${data['orders'][index]['tprice']}"
+                              .numCurrencyWithLocale()
+                              .text
+                              .make(),
+                        ],
+                      ),
+                      10.heightBox,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          "Quantity".text.fontFamily(bold).make(),
+                          "${data['orders'][index]['qty']}x"
+                              .text
+                              .fontFamily(bold)
+                              .make(),
+                        ],
+                      ),
+                      10.heightBox,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Container(
-                          width: 30,
-                          height: 20,
-                          color: Color(data['orders'][index]['color']),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            "Color".text.fontFamily(bold).make(),
+                            Container(
+                              width: 30,
+                              height: 20,
+                              color: Color(data['orders'][index]['color']),
+                            ),
+                          ],
                         ),
                       ),
-                      Divider()
+                      const Divider()
                     ],
                   );
                 }).toList(),

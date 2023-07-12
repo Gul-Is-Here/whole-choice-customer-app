@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/controller/auth_controller.dart';
 import 'package:whole_choice_customer/views/auth_screen/login_screen.dart';
-import 'package:whole_choice_customer/views/home-screens/home.dart';
-import 'package:whole_choice_customer/views/home-screens/home_screen.dart';
+
 import '../../consts/consts.dart';
 import '../../widget_common/applogo_widget.dart';
 import '../../widget_common/bg_widget.dart';
@@ -25,7 +24,7 @@ class _SignupState extends State<Signup> {
   var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-  var passwordRetypeController = TextEditingController();
+  var phone = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return bgWidget(
@@ -46,6 +45,14 @@ class _SignupState extends State<Signup> {
                   () => Column(
                     children: [
                       customTextField(
+                          validate: (value) {
+                            if (value.length < 3 || value.isEmpty) {
+                              const Text(
+                                'name length 3 character',
+                                style: TextStyle(color: redColor),
+                              );
+                            }
+                          },
                           hint: hintName,
                           title: name,
                           icon: nameIcon,
@@ -53,6 +60,14 @@ class _SignupState extends State<Signup> {
                           isPass: false),
                       5.heightBox,
                       customTextField(
+                          validate: (value) {
+                            if (value.isEmpty || value.length < 11) {
+                              const Text(
+                                'Enter valid phone number',
+                                style: TextStyle(color: redColor),
+                              );
+                            }
+                          },
                           hint: emailHint,
                           title: email,
                           icon: emailIcon,
@@ -60,6 +75,14 @@ class _SignupState extends State<Signup> {
                           isPass: false),
                       5.heightBox,
                       customTextField(
+                          validate: (value) {
+                            if (value.isEmpty || value.length < 11) {
+                              const Text(
+                                'Enter valid phone number',
+                                style: TextStyle(color: redColor),
+                              );
+                            }
+                          },
                           hint: passwordHint,
                           title: password,
                           icon: passwordIcon,
@@ -67,10 +90,18 @@ class _SignupState extends State<Signup> {
                           isPass: true),
                       5.heightBox,
                       customTextField(
-                          hint: passwordHint,
-                          title: retypepass,
-                          icon: passwordIcon,
-                          controller: passwordRetypeController,
+                          validate: (value) {
+                            if (value.isEmpty || value.length < 11) {
+                              const Text(
+                                'Enter valid phone number',
+                                style: TextStyle(color: redColor),
+                              );
+                            }
+                          },
+                          hint: '+16318269672',
+                          title: 'Phone',
+                          icon: phoneIcon,
+                          controller: phone,
                           isPass: true),
                       // Align(
                       //     alignment: Alignment.centerRight,
@@ -126,7 +157,7 @@ class _SignupState extends State<Signup> {
                               title: signup,
                               textColor: whiteColor,
                               onpress: () async {
-                                controller.isLoading(false);
+                                controller.isLoading(true);
                                 if (isCheck != false) {
                                   try {
                                     await controller
@@ -138,15 +169,22 @@ class _SignupState extends State<Signup> {
                                       return controller.storeUserData(
                                           name: nameController.text,
                                           email: emailController.text,
-                                          password: passwordController.text);
+                                          password: passwordController.text,
+                                          phone: phone.text);
                                     }).then((value) {
-                                      VxToast.show(context, msg: loggedin);
-                                      Get.off(() => const Home());
+                                      // VxToast.show(context, msg: loggedin);
+                                      Get.off(() {
+                                        controller.isLoading(false);
+                                        const LoginScreen();
+                                      });
                                     });
                                   } catch (e) {
                                     controller.isLoading(false);
                                     auth.signOut();
-                                    VxToast.show(context, msg: validDetail);
+                                    VxToast.show(
+                                      context,
+                                      msg: validDetail,
+                                    );
                                   }
                                 }
                               }).box.width(context.screenWidth - 50).make(),

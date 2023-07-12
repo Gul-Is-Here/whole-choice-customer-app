@@ -7,7 +7,9 @@ import 'package:whole_choice_customer/controller/profile_controller.dart';
 import 'package:whole_choice_customer/services/firestore_services.dart';
 import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
 
-import '../../category_screen.dart/item_details.dart';
+import '../../views/category_screen.dart/item_details.dart';
+
+// import '../../category_screen.dart/item_details.dart';
 
 class SearchDetailPage extends StatelessWidget {
   final String? title;
@@ -62,7 +64,7 @@ class SearchDetailPage extends StatelessWidget {
                       crossAxisCount: 2,
                       mainAxisSpacing: 15,
                       crossAxisSpacing: 12,
-                      mainAxisExtent: 250),
+                      mainAxisExtent: 230),
                   children: filtered
                       .mapIndexed((currentValue, index) => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +73,7 @@ class SearchDetailPage extends StatelessWidget {
                                 filtered[index]['p_imgs'][0],
                                 width: double.infinity,
                                 height: 130,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
                               ),
                               const Spacer(),
                               "${filtered[index]['p_name']}"
@@ -79,8 +81,8 @@ class SearchDetailPage extends StatelessWidget {
                                   .fontFamily(semibold)
                                   .color(darkFontGrey)
                                   .make(),
-                              5.heightBox,
-                              "${filtered[index]['p_desc']}".text.make(),
+                              // 5.heightBox,
+                              // "${filtered[index]['p_desc']}".text.make(),
                               5.heightBox,
                               "${filtered[index]['p_price']}"
                                   .numCurrencyWithLocale()

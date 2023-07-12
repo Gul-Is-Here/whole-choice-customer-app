@@ -30,6 +30,8 @@ const icMessages = "assets/icons/messages.png";
 const icMinus = "assets/icons/minus.png";
 const icMore = "assets/icons/more.png";
 const icOrder = "assets/icons/order.png";
+const icExchange = "assets/icons/exchange.png";
+
 const icOrders = "assets/icons/orders.png";
 const icPlaceholderRect = "assets/icons/placeholder_rectangle.png";
 const icPlaceholder = "assets/icons/placeholder.png";

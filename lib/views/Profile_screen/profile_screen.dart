@@ -6,6 +6,7 @@ import 'package:whole_choice_customer/controller/auth_controller.dart';
 import 'package:whole_choice_customer/controller/profile_controller.dart';
 import 'package:whole_choice_customer/services/firestore_services.dart';
 import 'package:whole_choice_customer/views/Profile_screen/components/details_card.dart';
+import 'package:whole_choice_customer/views/Profile_screen/privacy_policy_screen.dart';
 import 'package:whole_choice_customer/views/chat_screen/messagng_screen.dart';
 import 'package:whole_choice_customer/views/orders_screen/order_screen.dart';
 import 'package:whole_choice_customer/views/wishlist_screen/wishlist_screen.dart';
@@ -15,6 +16,7 @@ import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
 
 import '../auth_screen/login_screen.dart';
 import 'edit_profile_sreen.dart';
+import 'return_policy_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -170,7 +172,10 @@ class ProfileScreen extends StatelessWidget {
                                         Get.to(() => const WishlistScreen());
                                         break;
                                       case 2:
-                                        Get.to(() => const MessagesScreen());
+                                        Get.to(() => PrivacyPolicyScreen());
+                                        break;
+                                      case 3:
+                                        Get.to(() => ReturnPolicyScreen());
                                         break;
                                     }
                                   },

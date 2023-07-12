@@ -33,15 +33,13 @@ const categoriesImages = [
 ];
 
 const itemDetailButtonList = [
-  vedio,
   reviews,
   privacyPolicy,
   returnpolicy,
-  supportPolicy
 ];
 
 //------> Profile Screens
-const profieButtonList = [orders, wishlist, messages];
-const profileIconList = [icOrder, icOrder, icMessages];
+const profieButtonList = [orders, wishlist, messages, exchange];
+const profileIconList = [icOrder, icOrders, icMessages, icExchange];
 const paymentMethodImgs = [imgPaypal, imgStripe, imgCod];
 const paymentMethods = [payPal, stripe, cod];

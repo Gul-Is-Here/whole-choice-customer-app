@@ -3,7 +3,7 @@ import 'package:whole_choice_customer/consts/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:whole_choice_customer/views/category_screen.dart/category_detail.dart';
 
-import '../../category_screen.dart/category_screen.dart';
+// import '../../category_screen.dart/category_screen.dart';
 
 Widget featuredButton({String? title, icon}) {
   return Card(

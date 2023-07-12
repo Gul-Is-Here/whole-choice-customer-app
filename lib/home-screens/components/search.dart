@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/consts/consts.dart';
 import 'package:whole_choice_customer/controller/home_controller.dart';
-import 'package:whole_choice_customer/views/home-screens/components/search_detail.dart';
+import 'package:whole_choice_customer/home-screens/components/search_detail.dart';
+// import 'package:whole_choice_customer/views/home-screens/components/search_detail.dart';
 
 import '../../../controller/product_controller.dart';
 

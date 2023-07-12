@@ -1,21 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_share/whatsapp_share.dart';
 
 import 'package:whole_choice_customer/consts/consts.dart';
 import 'package:whole_choice_customer/consts/iconList.dart';
+import 'package:whole_choice_customer/controller/auth_controller.dart';
 import 'package:whole_choice_customer/controller/product_controller.dart';
 
 import 'package:flutter/material.dart';
+import 'package:whole_choice_customer/views/Profile_screen/privacy_policy_screen.dart';
+import 'package:whole_choice_customer/views/Profile_screen/return_policy_screen.dart';
+import 'package:whole_choice_customer/views/category_screen.dart/review_screen.dart';
 
+import '../../services/firestore_services.dart';
+import '../../widget_common/loading_indicator.dart';
 import '../chat_screen/chat_screen.dart';
 
 class ItemsDetailScreen extends StatelessWidget {
   final String? title;
+
   final dynamic data;
-  const ItemsDetailScreen({super.key, required this.title, this.data});
+  const ItemsDetailScreen({
+    super.key,
+    required this.title,
+    this.data,
+  });
 
   @override
   Widget build(BuildContext context) {
     var contoller = Get.put(ProductController());
+    // var pController = Get.find<AuthController>();
+    Future<void> share() async {
+      await WhatsappShare.share(
+        text: 'Whatsapp share text',
+        linkUrl: 'https://wa.me/',
+        phone: '911234567890',
+      );
+    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -37,10 +58,10 @@ class ItemsDetailScreen extends StatelessWidget {
               ),
               elevation: 0,
               backgroundColor: whiteColor,
-              title: title!.text.fontFamily(bold).color(darkFontGrey).make(),
+              // title: title!.text.fontFamily(bold).color(darkFontGrey).make(),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: share,
                     icon: const Icon(
                       Icons.share,
                       color: darkFontGrey,
@@ -80,7 +101,7 @@ class ItemsDetailScreen extends StatelessWidget {
                         itemCount: data['p_imgs'].length,
                         itemBuilder: (context, index) {
                           return Image.network(data['p_imgs'][index],
-                              width: double.infinity, fit: BoxFit.cover);
+                              width: double.infinity, fit: BoxFit.fitHeight);
                         }),
 
                     // -------> Tittle and Details Section
@@ -101,6 +122,7 @@ class ItemsDetailScreen extends StatelessWidget {
                       size: 25,
                       maxRating: 5,
                     ),
+                    10.heightBox,
                     "${data['p_price']}"
                         .numCurrencyWithLocale()
                         .text
@@ -131,8 +153,13 @@ class ItemsDetailScreen extends StatelessWidget {
                             Icons.message,
                             color: darkFontGrey,
                           ),
-                        ).onTap(() {
-                          Get.to(() => ChatScreen(),
+                        ).onTap(() async {
+                          Get.to(
+                              () => ChatScreen(
+                                    sellerName: "${data['p_seller']}",
+                                    sellerEmail: "${data['p_seller']}",
+                                    // sellerNumber: "${data['p_seller']}",
+                                  ),
                               arguments: [data['p_seller'], data['vendor_id']]);
                         })
                       ],
@@ -206,31 +233,40 @@ class ItemsDetailScreen extends StatelessWidget {
                                 () => Row(
                                   children: [
                                     IconButton(
-                                        onPressed: () {
-                                          contoller.decreaseQuantity();
-                                          contoller.calculateTotalPrice(
-                                              double.parse(data['p_price'])
-                                                  .toInt());
-                                        },
-                                        icon: const Icon(Icons.remove)),
+                                      onPressed: () {
+                                        contoller.decreaseQuantity();
+                                        contoller.calculateTotalPrice(
+                                            double.parse(data['p_price'])
+                                                .toInt());
+                                      },
+                                      icon: const Icon(Icons.remove),
+                                    ),
                                     contoller.quantity.value.text
                                         .size(16)
                                         .color(darkFontGrey)
                                         .make(),
                                     IconButton(
-                                        onPressed: () {
-                                          contoller.increaseQuantity(
-                                              int.parse(data['p_quantity']));
-                                          contoller.calculateTotalPrice(
-                                              double.parse(data['p_price'])
-                                                  .toInt());
-                                        },
-                                        icon: const Icon(Icons.add)),
+                                      onPressed: () {
+                                        contoller.increaseQuantity(
+                                            int.parse(data['p_quantity']));
+                                        contoller.calculateTotalPrice(
+                                            double.parse(data['p_price'])
+                                                .toInt());
+                                      },
+                                      icon: const Icon(Icons.add),
+                                    ),
                                     10.heightBox,
-                                    "${data['p_quantity']} avaiable"
-                                        .text
-                                        .color(textfieldGrey)
-                                        .make(),
+                                    if (contoller.quantity.value >
+                                        int.parse(data['p_quantity']))
+                                      "Out of Stock"
+                                          .text
+                                          .color(Colors.red)
+                                          .make()
+                                    else
+                                      "${data['p_quantity']} available"
+                                          .text
+                                          .color(textfieldGrey)
+                                          .make(),
                                   ],
                                 ),
                               ),
@@ -276,17 +312,32 @@ class ItemsDetailScreen extends StatelessWidget {
                     "${data['p_desc']}".text.color(darkFontGrey).make(),
 
                     // ----> Bttons Section
+// ----> Bttons Section
                     ListView(
                       shrinkWrap: true,
                       children: List.generate(
-                          itemDetailButtonList.length,
-                          (index) => ListTile(
-                                title: itemDetailButtonList[index]
-                                    .text
-                                    .fontFamily(semibold)
-                                    .make(),
-                                trailing: const Icon(Icons.arrow_forward),
-                              )),
+                        itemDetailButtonList.length,
+                        (index) => ListTile(
+                          onTap: () {
+                            switch (index) {
+                              case 0:
+                                Get.to(() => const ReviewScreen());
+                                break;
+                              case 1:
+                                Get.to(() => PrivacyPolicyScreen());
+                                break;
+                              case 2:
+                                Get.to(() => ReturnPolicyScreen());
+                                break;
+                            }
+                          },
+                          title: itemDetailButtonList[index]
+                              .text
+                              .fontFamily(semibold)
+                              .make(),
+                          trailing: const Icon(Icons.arrow_forward),
+                        ),
+                      ),
                     ),
                     10.heightBox,
                     productyoumaylike.text
@@ -294,76 +345,111 @@ class ItemsDetailScreen extends StatelessWidget {
                         .color(darkFontGrey)
                         .make(),
 
-                    // This is copied from feacture product Section
+// This is copied from feacture product Section
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(
-                            6,
-                            (index) => Column(
+                      child: StreamBuilder(
+                        stream: FirestoreServies.getFeaturedProduct(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return loadingIndicator();
+                          } else if (snapshot.data!.docs.isEmpty) {
+                            return "No Featured Product".text.makeCentered();
+                          } else {
+                            var featureData = snapshot.data!.docs;
+                            return Row(
+                              children: List.generate(
+                                featureData.length,
+                                (index) => Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Image.asset(
-                                      imgP1,
-                                      width: 160,
-                                      fit: BoxFit.cover,
+                                    Image.network(
+                                      featureData[index]['p_imgs'][0],
+                                      width: MediaQuery.of(context).size.width *
+                                          .4,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .2,
+                                      fit: BoxFit.fitHeight,
                                     ),
                                     10.heightBox,
-                                    '''Hp EliteBook 840 G5
-    8GB/256GB core i5
-    8th gen'''
-                                        .text
-                                        .fontFamily(semibold)
-                                        .color(darkFontGrey)
-                                        .make(),
+                                    SizedBox(
+                                      width: 150,
+                                      child: Text(
+                                        "${featureData[index]['p_name']}",
+                                        overflow: TextOverflow
+                                            .clip, // or TextOverflow.ellipsis
+                                        style: const TextStyle(
+                                          fontFamily: 'semibold',
+                                          color: darkFontGrey,
+                                        ),
+                                      ),
+                                    ),
                                     10.heightBox,
-                                    "\$600"
+                                    "${featureData[index]['p_price']}"
+                                        .numCurrencyWithLocale()
                                         .text
                                         .color(redColor)
                                         .fontFamily(bold)
-                                        .make()
+                                        .make(),
                                   ],
                                 )
                                     .box
                                     .white
                                     .margin(const EdgeInsets.symmetric(
                                         horizontal: 4))
-                                    .rounded
-                                    .padding(const EdgeInsets.all(8))
-                                    .make()),
+                                    .topRounded(value: 10.0)
+                                    .padding(const EdgeInsets.all(4))
+                                    .clip(Clip.antiAlias)
+                                    .make()
+                                    .onTap(() {
+                                  ItemsDetailScreen(
+                                      title: "${featureData[index]['p_name']}",
+                                      data: featureData[index]);
+                                }),
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ),
                   ],
                 )),
               )),
               SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: yellowColor),
-                    onPressed: () {
-                      if (contoller.quantity.value > 0) {
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: yellowColor),
+                  onPressed: () {
+                    if (contoller.quantity.value > 50) {
+                      if (contoller.quantity.value <= 200) {
+                        // Check if quantity is less than or equal to 10
                         contoller.addToCart(
-                            color: data['p_color'][contoller.colorIndex.value],
-                            context: context,
-                            vendorID: data['vendor_id'],
-                            img: data['p_imgs'][0],
-                            qty: contoller.quantity.value,
-                            sellername: data['p_seller'],
-                            title: data['p_name'],
-                            tprice: contoller.totalPrice.value);
+                          color: data['p_color'][contoller.colorIndex.value],
+                          context: context,
+                          vendorID: data['vendor_id'],
+                          img: data['p_imgs'][0],
+                          qty: contoller.quantity.value,
+                          sellername: data['p_seller'],
+                          title: data['p_name'],
+                          tprice: contoller.totalPrice.value.toDouble(),
+                        );
                         VxToast.show(context, msg: "Added to Cart");
                       } else {
                         VxToast.show(context,
-                            msg: "Minimum 1 Product is requrired");
+                            msg:
+                                "Maximum 200 products can be added to the cart");
                       }
-                    },
-                    child: const Text(
-                      "Add to Cart",
-                      style: TextStyle(fontFamily: bold),
-                    ),
-                  ))
+                    } else {
+                      VxToast.show(context,
+                          msg: "Minimum 50 Product is required");
+                    }
+                  },
+                  child: "Add to Cart".text.fontFamily(bold).make(),
+                ).box.roundedSM.padding(const EdgeInsets.all(8)).make(),
+              ),
             ],
           )),
     );

@@ -1,12 +1,13 @@
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:flutter/material.dart';
-import 'package:whole_choice_customer/controller/auth_controller.dart';
 
+import 'package:get/get.dart';
+import '../../controller/auth_controller.dart';
 import '../../widget_common/customeText.dart';
+import '../../widget_common/rounded_buton.dart';
 
-class PhoneNumberScreen extends StatelessWidget {
-  PhoneNumberScreen({super.key});
+class VerifyPhoneNumber extends StatelessWidget {
+  final String verificationId;
+  VerifyPhoneNumber({required this.verificationId, super.key});
   final _formkey = GlobalKey<FormState>();
 
   @override
@@ -14,7 +15,7 @@ class PhoneNumberScreen extends StatelessWidget {
     var controller = Get.put(AuthController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Phone Number"),
+        title: Text("Verify OTP"),
       ),
       body: Form(
         key: _formkey,
@@ -22,28 +23,23 @@ class PhoneNumberScreen extends StatelessWidget {
             child: Column(
           children: [
             customTextFormField(
-                controller: controller.phoneController,
+                controller: controller.verifyController,
                 icon: const Icon(Icons.phone),
-                title: 'Phone Number',
+                title: 'Enter OTP',
                 valid: (val) {
                   if (val.isEmpty) {
                     return "Enter valid Phone Number";
                   } else {
-                    return controller.storeUserData(
-                        phone: controller.passwordController.text);
+                    return null;
                   }
                 }),
             ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   if (_formkey.currentState!.validate()) {
-                    await controller.phoneNumber(context);
-                    controller.storeUserData(
-                      phone: controller.phoneController,
-                    );
-                    print(controller.phoneController);
+                    controller.verifyPhoneNumber(verificationId, context);
                   }
                 },
-                child: const Text("Get OTP"))
+                child: Text('Verify'))
           ],
         )),
       ),

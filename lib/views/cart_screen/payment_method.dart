@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whole_choice_customer/consts/consts.dart';
-import 'package:whole_choice_customer/consts/iconList.dart';
-import 'package:whole_choice_customer/controller/cart_controller.dart';
-import 'package:whole_choice_customer/views/home-screens/home.dart';
-import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
+import 'package:whole_choice_customer/views/Profile_screen/profile_screen.dart';
+import 'package:whole_choice_customer/views/orders_screen/orders_details.dart';
+
+// import 'package:whole_choice_customer/views/cart_screen/stripe_payment_screen.dart';
+
+import '../../consts/consts.dart';
+import '../../consts/iconList.dart';
+import '../../controller/cart_controller.dart';
+import '../../controller/stripe_controller.dart';
+import '../../home-screens/home.dart';
+import '../../widget_common/loading_indicator.dart';
 
 class PaymentMethod extends StatelessWidget {
-  const PaymentMethod({super.key});
+  const PaymentMethod({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var contoller = Get.find<CartController>();
+    var controller = Get.find<CartController>();
+    var stripecontroller = Get.put(StripeController());
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -26,92 +34,126 @@ class PaymentMethod extends StatelessWidget {
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
-          title: 'Choose Payment Method'
-              .text
-              .fontFamily(semibold)
-              .color(darkFontGrey)
-              .make(),
+          title: const Text(
+            'Choose Payment Method',
+            style: TextStyle(
+              fontFamily: semibold,
+              color: darkFontGrey,
+            ),
+          ),
         ),
         bottomNavigationBar: SizedBox(
           height: 60,
-          child: contoller.placingOrder.value
+          child: controller.placingOrder.value
               ? Center(
                   child: loadingIndicator(),
                 )
               : ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: yellowColor),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: yellowColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () async {
-                    contoller.placeMyOrder(
-                        orderPaymentMethod:
-                            paymentMethods[contoller.paymentIndex.value],
-                        totalAmount: contoller.totalP.value);
-                    await contoller.clearCart();
-                    VxToast.show(context, msg: "Order Placed Successfully");
-                    Get.offAll(Home());
+                    if (controller.paymentIndex.value == 1) {
+                      stripecontroller.makePayment().then((value) {
+                        controller.placeMyOrder(
+                          orderPaymentMethod:
+                              paymentMethods[controller.paymentIndex.value],
+                          totalAmount: controller.totalP.value,
+                        );
+                        controller.clearCart();
+                        VxToast.show(context, msg: "Inquiry Sent Successfully");
+                        // Get.off(
+                        //     ProfileScreen()); // Navigate to the profile screen
+                      });
+                    }
                   },
-                  child:
-                      "Place order".text.fontFamily(semibold).size(16).make()),
+                  child: Obx(
+                    () => Text(
+                      stripecontroller.isPayment.value
+                          ? 'Processing...'
+                          : 'Pay',
+                      style: const TextStyle(
+                        fontFamily: semibold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Obx(
             () => Column(
               children: List.generate(paymentMethodImgs.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    contoller.changePaymentIndex(index);
-                  },
-                  child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    margin: const EdgeInsets.only(bottom: 8, top: 8),
-                    height: 120,
-                    decoration: BoxDecoration(
+                if (index != 0 && index != 2) {
+                  return GestureDetector(
+                    onTap: () {
+                      controller.changePaymentIndex(index);
+                    },
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      margin: const EdgeInsets.only(bottom: 8, top: 8),
+                      height: 120,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: contoller.paymentIndex.value == index
-                                ? yellowColor
-                                : Colors.transparent,
-                            width: 4)),
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        Image.asset(
-                          paymentMethodImgs[index],
-                          width: double.infinity,
-                          colorBlendMode: contoller.paymentIndex.value == index
-                              ? BlendMode.darken
-                              : BlendMode.color,
-                          color: contoller.paymentIndex.value == index
-                              ? Colors.black.withOpacity(0.3)
+                          color: controller.paymentIndex.value == index
+                              ? yellowColor
                               : Colors.transparent,
-                          height: 120,
-                          fit: BoxFit.cover,
+                          width: 4,
                         ),
-                        contoller.paymentIndex.value == index
-                            ? Transform.scale(
-                                scale: 1.3,
-                                child: Checkbox(
-                                    activeColor: yellowColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    value: true,
-                                    onChanged: (value) {}),
-                              )
-                            : Container(),
-                        Positioned(
+                      ),
+                      child: Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Image.asset(
+                            paymentMethodImgs[index],
+                            width: double.infinity,
+                            colorBlendMode:
+                                controller.paymentIndex.value == index
+                                    ? BlendMode.darken
+                                    : BlendMode.color,
+                            color: controller.paymentIndex.value == index
+                                ? Colors.black.withOpacity(0.3)
+                                : Colors.transparent,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
+                          if (controller.paymentIndex.value == index)
+                            Transform.scale(
+                              scale: 1.3,
+                              child: Checkbox(
+                                activeColor: yellowColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                value: true,
+                                onChanged: (value) {},
+                              ),
+                            ),
+                          Positioned(
                             bottom: 10,
                             right: 10,
-                            child: paymentMethods[index]
-                                .text
-                                .white
-                                .fontFamily(semibold)
-                                .size(16)
-                                .make())
-                      ],
+                            child: Text(
+                              paymentMethods[index],
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: semibold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  return const SizedBox
+                      .shrink(); // Skip rendering index 0 and 2
+                }
               }),
             ),
           ),

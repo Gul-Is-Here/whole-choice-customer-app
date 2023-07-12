@@ -1,19 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/consts/iconList.dart';
-import 'package:whole_choice_customer/controller/home_controller.dart';
 import 'package:whole_choice_customer/controller/product_controller.dart';
 import 'package:whole_choice_customer/services/firestore_services.dart';
 import 'package:whole_choice_customer/views/category_screen.dart/item_details.dart';
-import 'package:whole_choice_customer/views/home-screens/components/featured_button.dart';
-import 'package:whole_choice_customer/views/home-screens/home.dart';
+// import 'package:whole_choice_customer/views/home-screens/components/featured_button.dart';
+// import 'package:whole_choice_customer/views/home-screens/home.dart';
 import 'package:whole_choice_customer/widget_common/home_buton.dart';
 import 'package:whole_choice_customer/widget_common/loading_indicator.dart';
 
 import '/consts/consts.dart';
 import 'package:flutter/material.dart';
 
+import 'components/featured_button.dart';
 import 'components/search.dart';
+import 'home.dart';
+// import 'top_category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -177,25 +179,33 @@ class HomeScreen extends StatelessWidget {
                             }),
                         20.heightBox,
                         SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(
-                                  3,
-                                  (index) => homeButton(
-                                      height: context.screenHeight * .14,
-                                      width: context.screenWidth / 3.5,
-                                      icon: index == 0
-                                          ? icTopCategories
-                                          : index == 1
-                                              ? icBrands
-                                              : icTopSeller,
-                                      title: index == 0
-                                          ? topCategories
-                                          : index == 1
-                                              ? brand
-                                              : topSaller)),
-                            )),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(
+                              3,
+                              (index) => GestureDetector(
+                                onTap: () {
+                                  if (index == 1) {}
+                                },
+                                child: homeButton(
+                                  height: context.screenHeight * .14,
+                                  width: context.screenWidth / 3.5,
+                                  icon: index == 0
+                                      ? icTopCategories
+                                      : index == 1
+                                          ? icBrands
+                                          : icTopSeller,
+                                  title: index == 0
+                                      ? topCategories
+                                      : index == 1
+                                          ? brand
+                                          : topSaller,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
 
                         // ------> Feature Categories  <-----
                         20.heightBox,
@@ -268,16 +278,34 @@ class HomeScreen extends StatelessWidget {
                                                       Image.network(
                                                         featureData[index]
                                                             ['p_imgs'][0],
-                                                        width: 130,
-                                                        height: 130,
-                                                        fit: BoxFit.cover,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .4,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            .2,
+                                                        fit: BoxFit.fitHeight,
                                                       ),
                                                       10.heightBox,
-                                                      "${featureData[index]['p_name']}"
-                                                          .text
-                                                          .fontFamily(semibold)
-                                                          .color(darkFontGrey)
-                                                          .make(),
+                                                      SizedBox(
+                                                        width:
+                                                            150, // Set a specific height constraint
+                                                        child: Text(
+                                                          "${featureData[index]['p_name']}",
+                                                          overflow: TextOverflow
+                                                              .clip, // or TextOverflow.ellipsis
+                                                          style:
+                                                              const TextStyle(
+                                                            fontFamily:
+                                                                'semibold',
+                                                            color: darkFontGrey,
+                                                          ),
+                                                        ),
+                                                      ),
                                                       10.heightBox,
                                                       "${featureData[index]['p_price']}"
                                                           .numCurrencyWithLocale()
@@ -361,23 +389,39 @@ class HomeScreen extends StatelessWidget {
                                       children: [
                                         Image.network(
                                           allProductsData[index]['p_imgs'][0],
-                                          width: double.infinity,
-                                          height: 130,
-                                          fit: BoxFit.cover,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .45,
+                                          fit: BoxFit.fitHeight,
                                         ),
                                         const Spacer(),
-                                        "${allProductsData[index]['p_desc']}"
-                                            .text
-                                            .fontFamily(semibold)
-                                            .color(darkFontGrey)
-                                            .make(),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0),
+                                          child:
+                                              "${allProductsData[index]['p_name']}"
+                                                  .text
+                                                  .fontFamily(semibold)
+                                                  .color(darkFontGrey)
+                                                  .make(),
+                                        ),
                                         10.heightBox,
-                                        "${allProductsData[index]['p_price']}"
-                                            .numCurrencyWithLocale()
-                                            .text
-                                            .color(redColor)
-                                            .fontFamily(bold)
-                                            .make(),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0),
+                                          child:
+                                              "${allProductsData[index]['p_price']}"
+                                                  .numCurrencyWithLocale()
+                                                  .text
+                                                  .color(redColor)
+                                                  .fontFamily(bold)
+                                                  .make(),
+                                        ),
                                         5.heightBox
                                       ],
                                     )

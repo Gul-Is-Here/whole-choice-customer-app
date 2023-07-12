@@ -80,14 +80,14 @@ class EditProfileScreen extends StatelessWidget {
                       hint: passwordHint,
                       title: oldpass,
                       icon: passwordIcon,
-                      isPass: false),
+                      isPass: true),
                   10.heightBox,
                   customTextField(
                       controller: contoller.newpassController,
                       hint: passwordHint,
                       title: newpass,
                       icon: passwordIcon,
-                      isPass: false),
+                      isPass: true),
                   20.heightBox,
                   contoller.isLoading.value
                       ? const CircularProgressIndicator(

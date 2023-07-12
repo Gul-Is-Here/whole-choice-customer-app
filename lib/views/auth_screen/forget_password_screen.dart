@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:whole_choice_customer/consts/consts.dart';
 import 'package:whole_choice_customer/controller/auth_controller.dart';
@@ -17,9 +15,7 @@ class ForgetPasswordScreen extends StatelessWidget {
         email: email,
       );
       VxToast.show(context, msg: "Password Reset email send!");
-    } on FirebaseAuthException catch (e) {
-      print(e.toString());
-    }
+    } on FirebaseAuthException catch (e) {}
   }
 
   @override
